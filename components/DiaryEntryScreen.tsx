@@ -2,6 +2,7 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { RootTabsParamList } from "../App";
+import ImagePickerExample from "./ImagePicker";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "Diary">;
 
@@ -16,6 +17,8 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <Text>Date: {selectedDate}</Text>
+      <ImagePickerExample />
+
       <TextInput
         style={styles.textInput}
         multiline
