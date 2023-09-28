@@ -1,20 +1,28 @@
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
+import { StatusBar } from "expo-status-bar";
 import React from "react";
-import CalendarScreen from "./components/CalenderScreen"; // Assuming you have a CalendarScreen
-import DiaryEntryScreen from "./components/DiaryEntryScreen"; // Update the path to your DiaryEntryScreen component
+import CalenderScreen from "./components/CalenderScreen";
+import DiaryEntryScreen from "./components/DiaryEntryScreen";
+import HomeScreen from "./components/HomeScreen";
 
-const Stack = createStackNavigator();
-
-const AppNavigator = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Calendar">
-        <Stack.Screen name="Calendar" component={CalendarScreen} />
-        <Stack.Screen name="DiaryEntry" component={DiaryEntryScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+export type RootTabsParamList = {
+  Home: undefined;
+  Diary: { selectedDate: string };
+  Calender: undefined;
 };
 
-export default AppNavigator;
+const Tabs = createBottomTabNavigator<RootTabsParamList>();
+
+export default function App() {
+  return (
+    <NavigationContainer>
+      <StatusBar style="auto" />
+      <Tabs.Navigator>
+        <Tabs.Screen name="Home" component={HomeScreen} />
+        <Tabs.Screen name="Diary" component={DiaryEntryScreen} />
+        <Tabs.Screen name="Calender" component={CalenderScreen} />
+      </Tabs.Navigator>
+    </NavigationContainer>
+  );
+}

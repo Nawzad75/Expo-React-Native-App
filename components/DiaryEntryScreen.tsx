@@ -1,21 +1,21 @@
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React, { useState } from "react";
-import { Button, StyleSheet, TextInput, View } from "react-native";
+import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { RootTabsParamList } from "../App";
 
-interface DiaryEntryScreenProps {
-  navigation: any; // Define appropriate navigation type
-}
+type Props = BottomTabScreenProps<RootTabsParamList, "Diary">;
 
-const DiaryEntryScreen: React.FC<DiaryEntryScreenProps> = ({ navigation }) => {
+const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
   const [diaryEntry, setDiaryEntry] = useState("");
+  const selectedDate = route.params.selectedDate;
 
   const handleSaveDiaryEntry = () => {
-    // Implement saving the diary entry to your chosen storage solution here
-    // You can use AsyncStorage or a database to store the entry
     console.log("Diary entry saved:", diaryEntry);
   };
 
   return (
     <View style={styles.container}>
+      <Text>Date: {selectedDate}</Text>
       <TextInput
         style={styles.textInput}
         multiline
