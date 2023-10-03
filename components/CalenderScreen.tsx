@@ -1,7 +1,7 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
-import { Calendar, DateData, LocaleConfig } from "react-native-calendars";
+import { Calendar, LocaleConfig } from "react-native-calendars";
 import { RootTabsParamList } from "../App";
 
 LocaleConfig.locales["en"] = {
@@ -50,8 +50,9 @@ LocaleConfig.defaultLocale = "en";
 type Props = BottomTabScreenProps<RootTabsParamList, "Calender">;
 
 const CalendarScreen: React.FC<Props> = ({ navigation }) => {
-  const handleDatePress = (day: DateData) => {
-    // Navigate to DiaryEntryScreen with the selected date
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const handleDatePress = (day: any) => {
+    setSelectedDate(day.dateString);
     navigation.navigate("Diary", { selectedDate: day.dateString });
   };
 
@@ -63,3 +64,17 @@ const CalendarScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 export default CalendarScreen;
+// const CalendarScreen: React.FC<CalendarScreenProps> = ({ navigation }) => {
+//   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+//   const handleDatePress = (day: any) => {
+//     setSelectedDate(day.dateString);
+//     navigation.navigate("DiaryEntry", { selectedDate: day.dateString });
+//   };
+
+//   return (
+//     <View>
+//       <Calendar onDayPress={handleDatePress} />
+//     </View>
+//   );
+// };
