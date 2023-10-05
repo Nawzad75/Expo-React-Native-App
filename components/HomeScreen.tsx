@@ -18,7 +18,7 @@ export default function HomeScreen({}: Props) {
           zIndex: 100,
         }}
       >
-        Demo!
+        Suvnet 22 Diary App
       </Text>
       <Image
         style={styles.image}

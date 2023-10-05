@@ -1,3 +1,4 @@
+import { AntDesign, Entypo, Feather } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -21,10 +22,42 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="auto" />
       <Tabs.Navigator>
-        <Tabs.Screen name="Home" component={HomeScreen} />
-        <Tabs.Screen name="Diary" component={DiaryEntryScreen} />
-        <Tabs.Screen name="DiaryShowScreen" component={DiaryShowScreen} />
-        <Tabs.Screen name="Calender" component={CalenderScreen} />
+        <Tabs.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="home" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Diary"
+          component={DiaryEntryScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Feather name="book-open" size={24} color="black" />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="DiaryShowScreen"
+          component={DiaryShowScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Entypo name="open-book" size={24} color="black" />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="Calender"
+          component={CalenderScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="calendar" size={24} color="black" />
+            ),
+          }}
+        />
       </Tabs.Navigator>
     </NavigationContainer>
   );

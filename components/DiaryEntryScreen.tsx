@@ -1,23 +1,66 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import React, { useState } from "react";
-import { Button, Image, StyleSheet, Text, TextInput, View } from "react-native";
+import { Camera } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
+import React, { useEffect, useState } from "react";
+import {
+  Button,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import uuid from "react-native-uuid";
 import { RootTabsParamList } from "../App";
-
-import * as ImagePicker from "expo-image-picker";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "Diary">;
 
 const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
   const [diaryEntry, setDiaryEntry] = useState("");
-  const selectedDate = route.params.selectedDate;
+  const selectedDate = route.params?.selectedDate;
   const [image, setImage] = useState<string | null>(null);
+  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+  const [cameraRef, setCameraRef] = useState<Camera | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera roll permissions to make this work!");
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const captureImage = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      alert("Sorry, we need camera permissions to make this work!");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+
       quality: 1,
     });
 
@@ -28,6 +71,7 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const handleSaveDiaryEntry = async () => {
     await AsyncStorage.clear();
+
     try {
       const diaryData = {
         id: uuid.v4(),
@@ -36,7 +80,6 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
         date: selectedDate,
       };
 
-      // Save diary entry data using AsyncStorage
       await AsyncStorage.setItem(
         diaryData.id as string,
         JSON.stringify(diaryData)
@@ -44,7 +87,6 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
 
       console.log("Diary entry saved:", diaryData);
 
-      // Navigate back to the previous screen or any desired screen
       navigation.goBack();
     } catch (error) {
       console.error("Error saving diary entry:", error);
@@ -53,57 +95,46 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <Text>Date: {selectedDate}</Text>
-      <TextInput
-        style={styles.textInput}
-        multiline
-        placeholder="Write your diary entry here"
-        value={diaryEntry}
-        onChangeText={(text) => setDiaryEntry(text)}
-      />
-      <Button title="Pick an image" onPress={pickImage} />
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <Button title="Save Entry" onPress={handleSaveDiaryEntry} />
+      <ScrollView>
+        <Text>Date: {selectedDate}</Text>
+        <TextInput
+          style={styles.textInput}
+          multiline
+          placeholder="Write your diary entry here"
+          value={diaryEntry}
+          onChangeText={(text) => setDiaryEntry(text)}
+        />
+        {hasPermission === null ? (
+          <View />
+        ) : hasPermission === false ? (
+          <Text>No access to camera</Text>
+        ) : (
+          <Camera
+            style={styles.camera}
+            type={Camera.Constants.Type}
+            ref={(ref) => setCameraRef(ref)}
+          />
+        )}
+
+        <Button title="Take a photo" onPress={captureImage} />
+        <Text></Text>
+        <Button title="Pick an image" onPress={pickImage} />
+        {image && <Image source={{ uri: image }} style={styles.image} />}
+        <Text></Text>
+        <Button title="Save Entry" onPress={handleSaveDiaryEntry} />
+      </ScrollView>
     </View>
   );
-
-  // const handleSaveDiaryEntry = () => {
-  //   if (diaryEntry.length > 0) {
-  //     //To check the input not empty
-  //     AsyncStorage.setItem("save-entry", diaryEntry);
-  //     //Setting a data to a AsyncStorage with respect to a key
-  //     setDiaryEntry("");
-  //     //Resetting the TextInput
-  //     alert("Data Saved");
-  //     //alert to confirm
-  //   } else {
-  //     alert("Please fill data");
-  //     //alert for the empty InputText
-  //   }
-  //   console.log("Diary entry saved:", diaryEntry);
-  // };
-
-  // return (
-  //   <View style={styles.container}>
-  //     <Text>Date: {selectedDate}</Text>
-  //     <ImagePickerExample />
-
-  //     <TextInput
-  //       style={styles.textInput}
-  //       multiline
-  //       placeholder="Write your diary entry here"
-  //       value={diaryEntry}
-  //       onChangeText={(text) => setDiaryEntry(text)}
-  //     />
-  //     <Button title="Save Entry" onPress={handleSaveDiaryEntry} />
-  //   </View>
-  // );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+  },
+  camera: {
+    flex: 1,
+    marginBottom: 16,
   },
   textInput: {
     height: 200,
@@ -113,9 +144,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
-    flex: 1,
-    width: "100%",
-    backgroundColor: "#0553",
+    width: 200,
+    height: 200,
+    resizeMode: "cover",
+    marginBottom: 16,
   },
 });
 
