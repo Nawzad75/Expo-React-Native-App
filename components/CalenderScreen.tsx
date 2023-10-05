@@ -64,17 +64,3 @@ const CalendarScreen: React.FC<Props> = ({ navigation }) => {
 };
 
 export default CalendarScreen;
-// const CalendarScreen: React.FC<CalendarScreenProps> = ({ navigation }) => {
-//   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
-//   const handleDatePress = (day: any) => {
-//     setSelectedDate(day.dateString);
-//     navigation.navigate("DiaryEntry", { selectedDate: day.dateString });
-//   };
-
-//   return (
-//     <View>
-//       <Calendar onDayPress={handleDatePress} />
-//     </View>
-//   );
-// };
