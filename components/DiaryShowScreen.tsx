@@ -56,7 +56,7 @@ const DiaryShowScreen = ({}: Props) => {
             onPress={getValueFunction}
             style={styles.buttonStyle}
           >
-            <Text style={styles.buttonTextStyle}> GET Diary </Text>
+            <Text style={styles.buttonTextStyle}> Get Diary </Text>
           </TouchableOpacity>
           <Text style={styles.textStyle}> {getValue} </Text>
           {getImages.map((image) => (

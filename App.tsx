@@ -32,6 +32,15 @@ export default function App() {
           }}
         />
         <Tabs.Screen
+          name="Calender"
+          component={CalenderScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <AntDesign name="calendar" size={24} color="black" />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="Diary"
           component={DiaryEntryScreen}
           options={{
@@ -46,15 +55,6 @@ export default function App() {
           options={{
             tabBarIcon: ({ color, size }) => (
               <Entypo name="open-book" size={24} color="black" />
-            ),
-          }}
-        />
-        <Tabs.Screen
-          name="Calender"
-          component={CalenderScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => (
-              <AntDesign name="calendar" size={24} color="black" />
             ),
           }}
         />
