@@ -6,7 +6,7 @@ import { RootTabsParamList } from "../App";
 
 type Props = BottomTabScreenProps<RootTabsParamList, "Home">;
 
-export default function HomeScreen({}: Props) {
+export default function HomeScreen({ }: Props) {
   return (
     <View style={styles.container}>
       <Text
@@ -18,7 +18,7 @@ export default function HomeScreen({}: Props) {
           zIndex: 100,
         }}
       >
-        Suvnet 22 Diary App
+        My Diary App
       </Text>
       <Image
         style={styles.image}

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { Camera } from "expo-camera";
+import { Camera, CameraType } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import {
@@ -70,7 +70,7 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   const handleSaveDiaryEntry = async () => {
-    await AsyncStorage.clear();
+    // await AsyncStorage.clear();
 
     try {
       const diaryData = {
@@ -84,6 +84,10 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
         diaryData.id as string,
         JSON.stringify(diaryData)
       );
+
+      setDiaryEntry("");
+      setImage(null);
+
 
       console.log("Diary entry saved:", diaryData);
 
@@ -111,7 +115,7 @@ const DiaryEntryScreen: React.FC<Props> = ({ navigation, route }) => {
         ) : (
           <Camera
             style={styles.camera}
-            type={Camera.Constants.Type}
+            type={CameraType.back}
             ref={(ref) => setCameraRef(ref)}
           />
         )}
